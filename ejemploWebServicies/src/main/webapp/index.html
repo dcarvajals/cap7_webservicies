@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html ng-app="app">
+    <head>
+        <title>Enterprise Java Beans</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="bootstrap.css">
+
+        <script src="jquery.min.js"></script>
+        <script src="angular.js" type="text/javascript"></script>
+    </head>
+    <body ng-controller="ejbcontroller">
+        <div class="container mt-3">
+            <a href="singup.html" class="btn btn-primary btn-sm float-right"> Nuevo cliente </a>
+            <strong> Clientes registrados </strong>
+            
+            <table class="table table-bordered table-striped table-sm table-hover mt-3" style="font-size: 12px">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Apellido</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Dirección</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="don_customer in customers">
+                        <td >{{don_customer.lastaname}}</td>
+                        <td >{{don_customer.name}}</td>
+                        <td >{{don_customer.email}}</td>
+                        <td >{{don_customer.address}}</td>
+                        <td >
+                            <button class="btn btn-primary btn-sm"
+                                    ng-click="">
+                                Editar
+                            </button>
+                            <button  class="btn btn-danger btn-sm"
+                                     ng-click="">
+                                Eliminar
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <script type="text/javascript">
+                    app = angular.module('app', []);
+                    app.controller('ejbcontroller', function ($scope, $http) {
+                        
+                        $scope.customers = [];
+                        
+                        $(document).ready(function () {
+                            $scope.loadCustomers();
+                        });
+
+                        $scope.loadCustomers = () => {
+                            $.ajax({
+                                type: "GET",
+                                url: 'CustomerServlet',
+                                data: {opcion: "listCustomer"},
+                                beforeSend: function () {
+                                    // cargando
+                                },
+                                success: function (data)
+                                {
+                                    var response = JSON.parse(data);
+                                    console.log(response);
+                                    $scope.$apply( ()=>{
+                                       $scope.customers = response; 
+                                    });
+                                    
+                                },
+                                error: function (objXMLHttpRequest)
+                                {
+                                    console.log("error", objXMLHttpRequest);
+                                }
+                            });
+                        }
+
+                    });
+        </script>
+    </body>
+</html>
